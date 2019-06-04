@@ -1,7 +1,7 @@
 import { createServer } from 'http';
 import { readFile } from 'fs';
 import { parse } from 'url';
-import { createMySQLConnection } from './connection';
+import { createMySQLConnection,closeMySQLConnection } from './connection';
   
 createServer(function (req, res) {
 	
@@ -37,6 +37,7 @@ createServer(function (req, res) {
 	function writeAnswer(argumentText, argumentType){
 		res.writeHead(200, {'Content-Type': argumentType});
 		res.end(argumentText);	
+		closeMySQLConnection(connection);
 	}
 
 }).listen(8060);

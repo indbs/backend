@@ -48,3 +48,27 @@
 2019-06-04 10:05:49 - Finished generaltimeline_request.exe
 2019-06-04 10:06:54 - Starting C:\Program Files\nodejs\node.exe  --harmony --max_old_space_size=4096 c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js --file C:\js\testmysql\start.js --log "GeneralTimeline_Request wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
 2019-06-04 10:06:54 - Started 8488
+2019-06-06 09:38:42 - Stopping generaltimeline_request.exe
+2019-06-06 09:38:42 - ProcessKill 8488
+2019-06-06 09:38:44 - Found child process: 460 Name: node.exe
+2019-06-06 09:38:44 - Stopping process 460
+2019-06-06 09:38:44 - Send SIGINT 460
+2019-06-06 09:38:45 - SIGINT to 460 failed - Killing as fallback
+2019-06-06 09:38:45 - Stopping process 8488
+2019-06-06 09:38:45 - Send SIGINT 8488
+2019-06-06 09:38:45 - SIGINT to8488 successful
+2019-06-06 09:38:45 - Finished generaltimeline_request.exe
+2019-06-06 10:23:14 - Starting C:\Program Files\nodejs\node.exe  --harmony --max_old_space_size=4096 c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js --file C:\js\testmysql\start.js --log "GeneralTimeline_Request wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2019-06-06 10:23:14 - Started 7052
+2019-06-06 12:40:29 - Stopping generaltimeline_request.exe
+2019-06-06 12:40:29 - ProcessKill 7052
+2019-06-06 12:40:29 - Found child process: 3428 Name: node.exe
+2019-06-06 12:40:29 - Stopping process 3428
+2019-06-06 12:40:29 - Send SIGINT 3428
+2019-06-06 12:40:29 - SIGINT to 3428 failed - Killing as fallback
+2019-06-06 12:40:29 - Stopping process 7052
+2019-06-06 12:40:29 - Send SIGINT 7052
+2019-06-06 12:40:29 - SIGINT to7052 successful
+2019-06-06 12:40:29 - Finished generaltimeline_request.exe
+2019-06-06 12:52:21 - Starting C:\Program Files\nodejs\node.exe  --harmony --max_old_space_size=4096 c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js --file C:\js\testmysql\start.js --log "GeneralTimeline_Request wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2019-06-06 12:52:21 - Started 11120

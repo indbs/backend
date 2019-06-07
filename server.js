@@ -26,13 +26,10 @@ createServer(function (req, res) {
 	}
 
 	function readQuery(inputQueryParams){
-		var mySQLrequestParams=[inputQueryParams.year, inputQueryParams.program_number];
-		console.log(mySQLrequestParams);
-		readFile('query_'+Object.keys(inputQueryParams)[0]+'_'+inputQueryParams[Object.keys(inputQueryParams)[0]]+'.sql', 'utf-8', (err, text_query) => { 
-			console.log(text_query);	
+		readFile('query_'+Object.keys(inputQueryParams)[0]+'_'+inputQueryParams[Object.keys(inputQueryParams)[0]]+'.sql', 'utf-8', (err, text_query) => { 	
 			try{
 				if (err) throw err;						
-				connection.query(text_query, mySQLrequestParams, function(err, results) {
+				connection.query(text_query, [inputQueryParams.year, inputQueryParams.program_number], function(err, results) {
 					if (err) throw err;
 					
 					writeAnswer(JSON.stringify(results),'application/json');								//ok with result from db

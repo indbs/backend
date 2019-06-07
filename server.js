@@ -6,46 +6,16 @@ import { createMySQLConnection,closeMySQLConnection } from './connection';
 createServer(function (req, res) {
 	
 	var connection = createMySQLConnection();
-
 	res.setHeader("Access-Control-Allow-Origin", "*");
 
 	connection.connect(function(err) {
 		try{
 			if (err) throw err;
-
-			if (parse(req.url, true).query.generaltimeline){									//timeline data generating			
-				readFile('query_generaltimeline_'+parse(req.url, true).query.generaltimeline+'.sql', 'utf-8', (err, text_query) => { 
-					try{
-						if (err) throw err;						
-						connection.query(text_query, function(err, results) {
-							if (err) throw err;
-							
-							writeAnswer(JSON.stringify(results),'application/json');								//ok with result from db
-						});
-					}
-					catch(e){
-						writeAnswer(e.toString(),'text/html');														//file opening problem
-					}			
-				})
-			}
-			if (parse(req.url, true).query.graph){												//graph data generating	
-				readFile('query_graph_'+parse(req.url, true).query.graph+'.sql', 'utf-8', (err, text_query) => { 
-					try{
-						if (err) throw err;						
-						connection.query(text_query, [parse(req.url, true).query.year,parse(req.url, true).query.program_number], function(err, results) {
-							if (err) throw err;
-							
-							writeAnswer(JSON.stringify(results),'application/json');								//ok with result from db
-						});
-					}
-					catch(e){
-						writeAnswer(e.toString(),'text/html');														//file opening problem
-					}			
-				})
-			}
+			readQuery(parse(req.url, true).query);
+			
 		}
 		catch(e){
-			writeAnswer(e.toString(),'text/html');																	//connection to db problems
+			writeAnswer(e.toString(),'text/html');															//connection to db problems
 		} 
 	});
 
@@ -53,6 +23,25 @@ createServer(function (req, res) {
 		res.writeHead(200, {'Content-Type': argumentType});
 		res.end(argumentText);	
 		closeMySQLConnection(connection);
+	}
+
+	function readQuery(inputQueryParams){
+		var mySQLrequestParams=[inputQueryParams.year, inputQueryParams.program_number];
+		console.log(mySQLrequestParams);
+		readFile('query_'+Object.keys(inputQueryParams)[0]+'_'+inputQueryParams[Object.keys(inputQueryParams)[0]]+'.sql', 'utf-8', (err, text_query) => { 
+			console.log(text_query);	
+			try{
+				if (err) throw err;						
+				connection.query(text_query, mySQLrequestParams, function(err, results) {
+					if (err) throw err;
+					
+					writeAnswer(JSON.stringify(results),'application/json');								//ok with result from db
+				});
+			}
+			catch(e){
+				writeAnswer(e.toString(),'text/html');														//file opening problem
+			}			
+		})
 	}
 
 }).listen(8060);

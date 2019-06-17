@@ -8,7 +8,7 @@ SELECT
 from  
 	fr06 table1
 where
-	year(date(time))=year(now())
+	year(date(time))=year(now()) and (month(now())-month(date(time))<2)
 group by 
 	PROGRAM_NUMBER
 order by

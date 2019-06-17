@@ -118,3 +118,5 @@
 2019-06-07 12:57:25 - Send SIGINT 2596
 2019-06-07 12:57:25 - SIGINT to2596 successful
 2019-06-07 12:57:25 - Finished generaltimeline_request.exe
+2019-06-07 15:51:55 - Starting C:\Program Files\nodejs\node.exe  --harmony --max_old_space_size=4096 c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js --file C:\js\testmysql\start.js --log "GeneralTimeline_Request wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2019-06-07 15:51:55 - Started 12236

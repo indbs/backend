@@ -30,9 +30,14 @@ createServer(function (req, res) {
 			try{
 				if (err) throw err;						
 				connection.query(text_query, [inputQueryParams.year, inputQueryParams.program_number], function(err, results) {
-					if (err) throw err;
+					try{
+						if (err) throw err;
 					
-					writeAnswer(JSON.stringify(results),'application/json');								//ok with result from db
+						writeAnswer(JSON.stringify(results),'application/json');							//ok with result from db
+					}
+					catch(e){
+						writeAnswer(e.toString(),'text/html');
+					}
 				});
 			}
 			catch(e){

@@ -6,17 +6,35 @@ Create temporary table temp1 SELECT
 	round(avg(WaterFlow)*hour(timediff(max(TIME1),min(TIME1))),2) as waterQuant,
 	round((avg(Current_L1)*avg(VOLTAGE_L1)+avg(Current_L2)*avg(VOLTAGE_L2)+avg(Current_L3)*avg(VOLTAGE_L3))/1000*hour(timediff(max(TIME1),min(TIME1))),2) as powerVAh,
 	round((avg(current_l1)*avg(voltage_l1)+avg(current_l2)*avg(voltage_l2)+avg(current_l3)*avg(voltage_l3))/1000*0.6*hour(timediff(max(TIME1),min(TIME1))),2) as powerkWh,
-	concat('',timediff(max(TIME1),min(TIME1))) as duration,
-	concat('',timediff(min(TIME1),ifnull((select max(TIME1) from raisa_2 where program_number=mt1.program_number-1 and year(date(time1))=year(now())),min(TIME1)))) as pause,
-	ifnull(TIMESTAMPDIFF(SECOND,(Select max(TIME1) from raisa_2 where program_number=mt1.program_number and year(date(time1))=year(now()) and (month(now())-month(date(time1))<2)), now()),0)  as currentWork  
+	concat('',timediff(greatest(max(TIME1),min(TIME1)),least(min(TIME1),max(TIME1)))) as duration,
+	concat(
+		'',timediff(
+				greatest(min(TIME1),ifnull(
+						(
+							select max(TIME1) from raisa_2 where program_number=mt1.program_number-1 and year(date(time1))=year(now())
+						),
+						min(TIME1)
+					)
+				),
+				ifnull(
+					(
+						select max(TIME1) from raisa_2 where program_number=mt1.program_number-1 and year(date(time1))=year(now())
+					),
+					min(TIME1)
+				)
+			)
+		) as pause,
+	ifnull(TIMESTAMPDIFF(SECOND,(Select max(TIME1) from raisa_2 where program_number=mt1.program_number and year(date(time1))=year(now()) and (month(now())-month(date(time1))<2)), now()),0)  as currentWork 
+
+
 FROM
 	raisa_2 mt1 
 WHERE 
-	year(date(time1))=year(now()) and (month(now())-month(date(time1))<2)
+	year(date(time1))=year(now()) and (month(now())-month(date(time1))<2) and program_number>0
 GROUP BY
-	PROGRAM_NUMBER HAVING PROGRAM_NUMBER > 0
+	PROGRAM_NUMBER
 ORDER BY 
-	TIME1; 
+	TIME1;
 
 SELECT 
 	STARTUP_TIME,
@@ -34,4 +52,4 @@ FROM
 GROUP BY 
 	PROGRAM_NUMBER 
 ORDER BY
-	STARTUP_TIME;  
+	STARTUP_TIME;

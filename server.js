@@ -11,8 +11,7 @@ createServer(function (req, res) {
 	connection.connect(function(err) {
 		try{
 			if (err) throw err;
-			readQuery(parse(req.url, true).query);
-			
+			readQuery(parse(req.url, true).query);			
 		}
 		catch(e){
 			writeAnswer(e.toString(),'text/html');															//connection to db problems

@@ -28,7 +28,7 @@ createServer(function (req, res) {
 		readFile('query_'+Object.keys(inputQueryParams)[0]+'_'+inputQueryParams[Object.keys(inputQueryParams)[0]]+'.sql', 'utf-8', (err, text_query) => { 	
 			try{
 				if (err) throw err;						
-				connection.query(text_query, [inputQueryParams.year, inputQueryParams.program_number], function(err, results) {
+				connection.query(text_query, [inputQueryParams.year, inputQueryParams.program_number ? inputQueryParams.program_number : inputQueryParams.channel_number], function(err, results) {
 					try{
 						if (err) throw err;
 					

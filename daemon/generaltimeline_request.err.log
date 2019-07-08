@@ -484,3 +484,12 @@ Error [ERR_IPC_CHANNEL_CLOSED]: channel closed
     at emitNone (events.js:106:13)
     at process.emit (events.js:208:7)
     at Signal.wrap.onsignal (internal/process.js:208:44)
+c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js:177
+    child.send('shutdown');
+          ^
+
+TypeError: Cannot read property 'send' of null
+    at process.killkid (c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js:177:11)
+    at emitNone (events.js:106:13)
+    at process.emit (events.js:208:7)
+    at Signal.wrap.onsignal (internal/process.js:208:44)

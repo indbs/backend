@@ -160,3 +160,15 @@
 2019-07-01 23:02:09 - Finished generaltimeline_request.exe
 2019-07-01 23:02:10 - Starting C:\Program Files\nodejs\node.exe  --harmony --max_old_space_size=4096 c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js --file C:\js\testmysql\start.js --log "GeneralTimeline_Request wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
 2019-07-01 23:02:10 - Started 3300
+2019-07-08 15:51:24 - Stopping generaltimeline_request.exe
+2019-07-08 15:51:24 - ProcessKill 3300
+2019-07-08 15:51:25 - Found child process: 7496 Name: node.exe
+2019-07-08 15:51:25 - Stopping process 7496
+2019-07-08 15:51:25 - Send SIGINT 7496
+2019-07-08 15:51:26 - SIGINT to 7496 failed - Killing as fallback
+2019-07-08 15:51:26 - Stopping process 3300
+2019-07-08 15:51:26 - Send SIGINT 3300
+2019-07-08 15:51:29 - SIGINT to3300 successful
+2019-07-08 15:51:29 - Finished generaltimeline_request.exe
+2019-07-08 15:51:30 - Starting C:\Program Files\nodejs\node.exe  --harmony --max_old_space_size=4096 c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js --file C:\js\testmysql\start.js --log "GeneralTimeline_Request wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2019-07-08 15:51:30 - Started 8128

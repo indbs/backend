@@ -18,3 +18,10 @@ svc.uninstall();
 
 //npm link node-windows!!!!!!!!!!
 //in console under admin!
+
+//проверка зависающей службы
+//netstat -ano | find "LISTENING" | find "8060"
+//-kill-
+//taskkill /pid 14828
+//-force kill-
+//taskkill /pid 14828 /f

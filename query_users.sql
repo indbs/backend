@@ -1,0 +1,10 @@
+SELECT 
+	ID,
+	EMAIL,
+	PASSWORD,
+	NAME,
+	SURNAME
+FROM 
+	USERS
+where 
+	EMAIL=? and PASSWORD=?;

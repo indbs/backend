@@ -8,7 +8,7 @@ createServer(function (req, res) {
 	
 	var connection = createMySQLConnection();
 	res.setHeader("Access-Control-Allow-Origin", "*");
-	res.setHeader("Access-Control-Allow-Headers", "Content-Type, access-control-allow-origi");
+	res.setHeader("Access-Control-Allow-Headers", "Content-Type, access-control-allow-origin");
 
 	connection.connect(function(err) {
 		try{
@@ -16,12 +16,12 @@ createServer(function (req, res) {
 			readQuery(req);			
 		}
 		catch(e){
-			writeAnswer(e.toString(),'text/html');															//connection to db problems
+			writeAnswer(e.toString(),'text/html');																					//connection to db problems
 		} 
 	});
 
-	function writeAnswer(argumentText, argumentType){
-		res.writeHead(200, {'Content-Type': argumentType});
+	function writeAnswer(status, argumentText, argumentType){
+		res.writeHead(status, {'Content-Type': argumentType});
 		res.end(argumentText);	
 		closeMySQLConnection(connection);
 	}
@@ -31,7 +31,7 @@ createServer(function (req, res) {
 			let body = [];
 			req.on('data', (chunk)=>{
 				body.push(chunk);
-			}).on('end', () => {
+			}).on('end', () => {																														//receiving body data from http
 				body = Buffer.concat(body).toString();
 				var untokenUserDataPair = jwt.verify(JSON.parse(body).userDataPairToken, 'ferropribor');
 				readFile('query_users.sql', 'utf-8', (err, text_query) => {
@@ -40,39 +40,52 @@ createServer(function (req, res) {
 						connection.query(text_query, [untokenUserDataPair.email, untokenUserDataPair.hash], function(err, results) {
 							try{
 								if (err) throw err;
-								writeAnswer(JSON.stringify(results),'application/json');							//ok with result from db
-							}
+								var tokenForData = jwt.sign('must_be_a_token', 'ferropribortoken');
+								if (results[0])	writeAnswer(200, JSON.stringify({...JSON.parse(JSON.stringify(results[0])), ...{token: tokenForData}}),'application/json');
+								else	writeAnswer(400, JSON.stringify({ message: 'Неправильное имя пользователя или пароль!'}),'application/json');	//ok with result from db						
+							}	
 							catch(e){
-								writeAnswer(e.toString(),'text/html');
+								writeAnswer(200, e.toString(),'text/html');
 							}
 						})
 					}
 					catch(e){
-						writeAnswer(e.toString(),'text/html');
+						writeAnswer(200, e.toString(),'text/html');
 					}
 				})
 			});
 		}
 		
 		if (req.method == 'GET') {
-			var inputQueryParams = parse(req.url, true).query;
-			readFile('query_'+Object.keys(inputQueryParams)[0]+'_'+inputQueryParams[Object.keys(inputQueryParams)[0]]+'.sql', 'utf-8', (err, text_query) => { 	
-				try{
-					if (err) throw err;						
-					connection.query(text_query, [inputQueryParams.year, inputQueryParams.program_number ? inputQueryParams.program_number : inputQueryParams.channel_number], function(err, results) {
+			if(req.headers.authorization){
+				if (jwt.verify(req.headers.authorization, 'ferropribortoken')=='must_be_a_token'){ 
+					var inputQueryParams = parse(req.url, true).query;
+					readFile('query_'+Object.keys(inputQueryParams)[0]+'_'+inputQueryParams[Object.keys(inputQueryParams)[0]]+'.sql', 'utf-8', (err, text_query) => { 	
 						try{
-							if (err) throw err;
-							writeAnswer(JSON.stringify(results),'application/json');							//ok with result from db
+							if (err) throw err;						
+							connection.query(text_query, [inputQueryParams.year, inputQueryParams.program_number ? inputQueryParams.program_number : inputQueryParams.channel_number], function(err, results) {
+								try{
+									if (err) throw err;
+									writeAnswer(200, JSON.stringify(results),'application/json');							//ok with result from db
+								}
+								catch(e){
+									writeAnswer(200, e.toString(),'text/html');
+								}
+							});
 						}
 						catch(e){
-							writeAnswer(e.toString(),'text/html');
-						}
-					});
+							writeAnswer(200, e.toString(),'text/html');																		//file opening problem
+						}			
+					})
 				}
-				catch(e){
-					writeAnswer(e.toString(),'text/html');																		//file opening problem
-				}			
-			})
+			}else writeAnswer(401, 'Unauthorised','text/html');
+		}
+
+		if (req.method == 'OPTIONS') {
+			if(req.headers['access-control-request-headers'] == 'authorization'){				
+				res.setHeader("Access-Control-Allow-Headers", "authorization");
+			}
+			writeAnswer(200, 'HELLO THERE! WE ARE THE BEST INDUSTRIAL INFORMATION SYSTEMS DEVELOPPERS!','text/html');
 		}
 	}
 

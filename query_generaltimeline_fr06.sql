@@ -1,3 +1,9 @@
+create temporary table fake_table_for_same_results_json_array 
+SELECT 
+	max(TIME) AS STARTUP_TIME
+FROM
+	fr06;
+
 SELECT
 	min(TIME) as STARTUP_TIME, 
 	max(TIME) as end_time, 

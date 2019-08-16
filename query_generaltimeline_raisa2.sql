@@ -25,8 +25,6 @@ Create temporary table temp1 SELECT
 			)
 		) as pause,
 	ifnull(TIMESTAMPDIFF(SECOND,(Select max(TIME1) from raisa_2 where program_number=mt1.program_number and year(date(time1))=year(now()) and (month(now())-month(date(time1))<2)), now()),0)  as currentWork 
-
-
 FROM
 	raisa_2 mt1 
 WHERE 
@@ -39,6 +37,9 @@ ORDER BY
 SELECT 
 	STARTUP_TIME,
 	PROGRAM_NUMBER,
+	substring(PROGRAMS_HEAT_RAISA_2.PROGRAM_NAME,1,locate(char(0),PROGRAMS_HEAT_RAISA_2.PROGRAM_NAME)-1) as PROGRAM_NAME,
+	max(PROGRAMS_HEAT_RAISA_2.step_NO) as heat_st,
+	max(PROGRAMS_GAS_RAISA_2.step_no) as gas_st, 
 	pause,
 	n2,
 	end_time,
@@ -48,7 +49,20 @@ SELECT
 	duration,
 	currentWork 
 FROM
-	temp1 
+	temp1
+LEFT JOIN
+	PROGRAMS_HEAT_RAISA_2
+USING 
+  (PROGRAM_NUMBER) 
+LEFT JOIN
+  PROGRAMS_GAS_RAISA_2
+USING 
+	(PROGRAM_NUMBER)
+WHERE
+	year(date(PROGRAMS_HEAT_RAISA_2.inserted))=year(now()) 
+		and year(date(PROGRAMS_GAS_RAISA_2.inserted))=year(now()) 
+		and (month(now())-month(date(PROGRAMS_GAS_RAISA_2.inserted))<2)
+		and (month(now())-month(date(PROGRAMS_HEAT_RAISA_2.inserted))<2) 
 GROUP BY 
 	PROGRAM_NUMBER 
 ORDER BY

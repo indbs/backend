@@ -1,0 +1,2 @@
+2019-08-20 08:23:28 - Starting C:\Program Files\nodejs\node.exe  --harmony --max_old_space_size=4096 c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js --file C:\js\testmysql\start.js --log "GeneralTimeline_Request wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2019-08-20 08:23:28 - Started 9140

@@ -1,0 +1,15 @@
+_http_server.js:194
+    throw new RangeError(`Invalid status code: ${originalStatusCode}`);
+    ^
+
+RangeError: Invalid status code: Error: connect ETIMEDOUT
+    at ServerResponse.writeHead (_http_server.js:194:11)
+    at writeHead (C:\js\testmysql/server.js:24:7)
+    at Handshake.writeAnswer (C:\js\testmysql/server.js:19:4)
+    at Handshake.<anonymous> (C:\js\testmysql\node_modules\mysql\lib\Connection.js:525:10)
+    at Handshake._callback (C:\js\testmysql\node_modules\mysql\lib\Connection.js:491:16)
+    at Handshake.Sequence.end (C:\js\testmysql\node_modules\mysql\lib\protocol\sequences\Sequence.js:83:24)
+    at Protocol.handleNetworkError (C:\js\testmysql\node_modules\mysql\lib\protocol\Protocol.js:369:14)
+    at Connection._handleNetworkError (C:\js\testmysql\node_modules\mysql\lib\Connection.js:421:18)
+    at Connection._handleConnectTimeout (C:\js\testmysql\node_modules\mysql\lib\Connection.js:417:8)
+    at Object.onceWrapper (events.js:313:30)

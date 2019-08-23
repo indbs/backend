@@ -1,8 +1,8 @@
-import { createServer } from 'http';
-import { readFile } from 'fs';
-import { parse } from 'url';
-import { createMySQLConnection,closeMySQLConnection } from './connection';
-import jwt from 'jsonwebtoken';
+import { createServer } 																from 'http';
+import { readFile } 																		from 'fs';
+import { parse } 																				from 'url';
+import { createMySQLConnection,closeMySQLConnection } 	from './connection';
+import jwt 																							from 'jsonwebtoken';
   
 createServer(function (req, res) {
 	
@@ -33,26 +33,49 @@ createServer(function (req, res) {
 				body.push(chunk);
 			}).on('end', () => {																														//receiving body data from http
 				body = Buffer.concat(body).toString();
-				var untokenUserDataPair = jwt.verify(JSON.parse(body).userDataPairToken, 'ferropribor');
-				readFile('query_users.sql', 'utf-8', (err, text_query) => {
-					try{
-						if (err) throw err;
-						connection.query(text_query, [untokenUserDataPair.email, untokenUserDataPair.hash], function(err, results) {
-							try{
-								if (err) throw err;
-								var tokenForData = jwt.sign('must_be_a_token', 'ferropribortoken');
-								if (results[0])	writeAnswer(200, JSON.stringify({...JSON.parse(JSON.stringify(results[0])), ...{token: tokenForData}}),'application/json');
-								else	writeAnswer(400, JSON.stringify({ message: 'Неправильное имя пользователя или пароль!'}),'application/json');	//ok with result from db						
-							}	
-							catch(e){
-								writeAnswer(200, e.toString(),'text/html');
-							}
-						})
-					}
-					catch(e){
-						writeAnswer(200, e.toString(),'text/html');
-					}
-				})
+				if (JSON.parse(body).userDataPairToken){
+					var untokenUserDataPair = jwt.verify(JSON.parse(body).userDataPairToken, 'ferropribor');
+					readFile('query_search_user.sql', 'utf-8', (err, text_query) => {
+						try{
+							if (err) throw err;
+							connection.query(text_query, [untokenUserDataPair.email, untokenUserDataPair.hash], function(err, results) {
+								try{
+									if (err) throw err;
+									var tokenForData = jwt.sign('must_be_a_token', 'ferropribortoken');
+									if (results[0])	writeAnswer(200, JSON.stringify({...JSON.parse(JSON.stringify(results[0])), ...{token: tokenForData}}),'application/json');
+									else	writeAnswer(400, JSON.stringify({ message: 'Неправильное имя пользователя или пароль!'}),'application/json');	//ok with result from db						
+								}	
+								catch(e){
+									writeAnswer(200, e.toString(),'text/html');
+								}
+							})
+						}
+						catch(e){
+							writeAnswer(200, e.toString(),'text/html');
+						}
+					})
+				}
+				if (JSON.parse(body).userDataQuartetToken){
+					var untokenUserDataQuartet = jwt.verify(JSON.parse(body).userDataQuartetToken, 'ferropribor');
+					readFile('query_insert_user.sql', 'utf-8', (err, text_query) => {
+						try{
+							if (err) throw err;
+							connection.query(text_query, [untokenUserDataQuartet.email, untokenUserDataQuartet.hash, untokenUserDataQuartet.name, untokenUserDataQuartet.surname], function(err, results) {
+								try{
+									if (err) throw err;
+									if (results)	writeAnswer(200, JSON.stringify(results), 'application/json');
+									else	writeAnswer(400, JSON.stringify({ message: 'Что-то пошло не так!..'}),'application/json');	//ok with result from db						
+								}	
+								catch(e){
+									writeAnswer(200, e.toString(),'text/html');
+								}
+							})
+						}
+						catch(e){
+							writeAnswer(200, e.toString(),'text/html');
+						}
+					})
+				}
 			});
 		}
 		
@@ -66,7 +89,7 @@ createServer(function (req, res) {
 							connection.query(text_query, [inputQueryParams.year, inputQueryParams.program_number ? inputQueryParams.program_number : inputQueryParams.channel_number], function(err, results) {
 								try{
 									if (err) throw err;
-									writeAnswer(200, JSON.stringify(results),'application/json');							//ok with result from db
+									writeAnswer(200, JSON.stringify(results), 'application/json');							//ok with result from db
 								}
 								catch(e){
 									writeAnswer(200, e.toString(),'text/html');

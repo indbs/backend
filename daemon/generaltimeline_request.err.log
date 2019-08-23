@@ -13,3 +13,12 @@ RangeError: Invalid status code: Error: connect ETIMEDOUT
     at Connection._handleNetworkError (C:\js\testmysql\node_modules\mysql\lib\Connection.js:421:18)
     at Connection._handleConnectTimeout (C:\js\testmysql\node_modules\mysql\lib\Connection.js:417:8)
     at Object.onceWrapper (events.js:313:30)
+c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js:177
+    child.send('shutdown');
+          ^
+
+TypeError: Cannot read property 'send' of null
+    at process.killkid (c:\Users\Admin\AppData\Roaming\npm\node_modules\node-windows\lib\wrapper.js:177:11)
+    at emitNone (events.js:106:13)
+    at process.emit (events.js:208:7)
+    at Signal.wrap.onsignal (internal/process.js:208:44)

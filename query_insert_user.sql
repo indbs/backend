@@ -1,0 +1,3 @@
+INSERT INTO 
+	USERS (INSERTED, EMAIL, PASSWORD, NAME, SURNAME) 
+values (NOW(), ?, ?, ?, ?);

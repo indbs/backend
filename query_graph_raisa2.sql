@@ -10,7 +10,7 @@ SELECT
 	tc411,
 	tc412,
 	analiser_calc,
-	oxygen_predict_sp,
+	oxygen_predict_sp_float as oxygen_predict_sp,
 	flap_a_percent_position,
 	flap_b_percent_position,
 	flap_c_percent_position,

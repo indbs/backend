@@ -1,8 +1,14 @@
 import { createServer } 																from 'http';
 import { readFile } 																		from 'fs';
 import { parse } 																				from 'url';
-import { createMySQLConnection,closeMySQLConnection } 	from './connection';
-import jwt 																							from 'jsonwebtoken';
+import { createMySQLConnection,
+				 closeMySQLConnection,
+				 queryMySQLConnection } 												from './connection';
+import 	 jwt 																						from 'jsonwebtoken';
+import { handleOPTIONSrequest }													from './RequestMethodHandlers/optionsHandler'
+import { handleGETrequest }															from './RequestMethodHandlers/getHandler'
+import { tokens }																				from './constants/tokens'
+import { readMySQLQuery}																from './fs/readQueryFromFile'
   
 createServer(function (req, res) {
 	
@@ -34,14 +40,14 @@ createServer(function (req, res) {
 			}).on('end', () => {																														//receiving body data from http
 				body = Buffer.concat(body).toString();
 				if (JSON.parse(body).userDataPairToken){
-					var untokenUserDataPair = jwt.verify(JSON.parse(body).userDataPairToken, 'ferropribor');
-					readFile('query_search_user.sql', 'utf-8', (err, text_query) => {
+					var untokenUserDataPair = jwt.verify(JSON.parse(body).userDataPairToken, tokens.client_side_salt);
+					readFile('./queries/query_search_user.sql', 'utf-8', (err, text_query) => {
 						try{
 							if (err) throw err;
 							connection.query(text_query, [untokenUserDataPair.email, untokenUserDataPair.hash], function(err, results) {
 								try{
 									if (err) throw err;
-									var tokenForData = jwt.sign('must_be_a_token', 'ferropribortoken');
+									var tokenForData = jwt.sign(tokens.client_side_value, tokens.client_side_token);
 									if (results[0])	writeAnswer(200, JSON.stringify({...JSON.parse(JSON.stringify(results[0])), ...{token: tokenForData}}),'application/json');
 									else	writeAnswer(400, JSON.stringify({ message: 'Неправильное имя пользователя или пароль!'}),'application/json');	//ok with result from db						
 								}	
@@ -56,8 +62,8 @@ createServer(function (req, res) {
 					})
 				}
 				if (JSON.parse(body).userDataQuartetToken){
-					var untokenUserDataQuartet = jwt.verify(JSON.parse(body).userDataQuartetToken, 'ferropribor');
-					readFile('query_insert_user.sql', 'utf-8', (err, text_query) => {
+					var untokenUserDataQuartet = jwt.verify(JSON.parse(body).userDataQuartetToken, tokens.client_side_salt);
+					readFile('./queries/query_insert_user.sql', 'utf-8', (err, text_query) => {
 						try{
 							if (err) throw err;
 							connection.query(text_query, [untokenUserDataQuartet.email, untokenUserDataQuartet.hash, untokenUserDataQuartet.name, untokenUserDataQuartet.surname], function(err, results) {
@@ -80,35 +86,17 @@ createServer(function (req, res) {
 		}
 		
 		if (req.method == 'GET') {
-			if(req.headers.authorization){
-				if (jwt.verify(req.headers.authorization, 'ferropribortoken')=='must_be_a_token'){ 
-					var inputQueryParams = parse(req.url, true).query;
-					readFile('query_'+Object.keys(inputQueryParams)[0]+'_'+inputQueryParams[Object.keys(inputQueryParams)[0]]+'.sql', 'utf-8', (err, text_query) => { 	
-						try{
-							if (err) throw err;						
-							connection.query(text_query, [inputQueryParams.year, inputQueryParams.program_number ? inputQueryParams.program_number : inputQueryParams.channel_number], function(err, results) {
-								try{
-									if (err) throw err;
-									writeAnswer(200, JSON.stringify(results), 'application/json');							//ok with result from db
-								}
-								catch(e){
-									writeAnswer(200, e.toString(),'text/html');
-								}
-							});
-						}
-						catch(e){
-							writeAnswer(200, e.toString(),'text/html');																		//file opening problem
-						}			
-					})
-				}
-			}else writeAnswer(401, 'Unauthorised','text/html');
+			handleGETrequest(req, connection)
+				.then((result) => {
+					writeAnswer(result.responseCode, result.responseResult, result.responseType);
+				})
+				.catch((result) => {
+					writeAnswer(result.responseCode, result.responseResult, result.responseType);
+				})
 		}
 
 		if (req.method == 'OPTIONS') {
-			if(req.headers['access-control-request-headers'] == 'authorization'){				
-				res.setHeader("Access-Control-Allow-Headers", "authorization");
-			}
-			writeAnswer(200, 'HELLO THERE! WE ARE THE BEST INDUSTRIAL INFORMATION SYSTEMS DEVELOPPERS!','text/html');
+			writeAnswer(200, handleOPTIONSrequest(req, res), 'text/html');
 		}
 	}
 

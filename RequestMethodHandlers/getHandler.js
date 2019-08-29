@@ -3,7 +3,7 @@ import 	 jwt 																						from 'jsonwebtoken';
 import { parse } 																				from 'url';
 import { readMySQLQuery}																from '../fs/readQueryFromFile'
 import { queryMySQLConnection } 												from '../connection';
-import { prepareAnswer }                                from '../helpers/aux'
+import { prepareAnswer }                                from '../helpers/aux_functions'
 
 export function handleGETrequest(req, connection) {
   return new Promise((resolve, reject) => {

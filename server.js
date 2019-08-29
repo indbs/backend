@@ -1,6 +1,7 @@
 import { createServer } 																from 'http';
 import { createMySQLConnection,
-				 closeMySQLConnection } 												from './connection';
+				 closeMySQLConnection,
+				 makeMySQLConnection } 													from './connection';
 import { handleOPTIONSrequest }													from './RequestMethodHandlers/optionsHandler'
 import { handleGETrequest }															from './RequestMethodHandlers/getHandler'
 import { handlePOST_RegistrationRequest,
@@ -12,21 +13,11 @@ createServer(function (req, res) {
 	res.setHeader("Access-Control-Allow-Origin", "*");
 	res.setHeader("Access-Control-Allow-Headers", "Content-Type, access-control-allow-origin");
 
-	connection.connect(function(err) {
-		try{
-			if (err) throw err;
-			readQuery(req);			
-		}
-		catch(e){
-			writeAnswer(e.toString(),'text/html');																					//connection to db problems
-		} 
-	});
-
-	function writeAnswer(status, argumentText, argumentType){
-		res.writeHead(status, {'Content-Type': argumentType});
-		res.end(argumentText);	
-		closeMySQLConnection(connection);
-	}
+	makeMySQLConnection(connection)
+		.then(
+			readQuery(req),
+			(error) 	=> writeAnswer(error.responseCode, error.responseResult, error.responseType)
+		)
 
 	function readQuery(req){
 		if (req.method == 'POST') {
@@ -61,8 +52,18 @@ createServer(function (req, res) {
 		}
 
 		if (req.method == 'OPTIONS') {
-			writeAnswer(200, handleOPTIONSrequest(req, res), 'text/html');
+		handleOPTIONSrequest(req, res)
+			.then(
+				(result) 		=> writeAnswer(result.responseCode, result.responseResult, result.responseType),
+				(error) 		=> writeAnswer(error.responseCode, error.responseResult, error.responseType)
+			)
 		}
+	}
+
+	function writeAnswer(status, argumentText, argumentType){
+		res.writeHead(status, {'Content-Type': argumentType});
+		res.end(argumentText);	
+		closeMySQLConnection(connection);
 	}
 
 }).listen(8060);

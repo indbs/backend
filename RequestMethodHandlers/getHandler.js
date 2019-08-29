@@ -3,10 +3,7 @@ import 	 jwt 																						from 'jsonwebtoken';
 import { parse } 																				from 'url';
 import { readMySQLQuery}																from '../fs/readQueryFromFile'
 import { queryMySQLConnection } 												from '../connection';
-
-function prepareAnswer(responseCode, responseResult, responseType){
-  return {responseCode: responseCode, responseResult: responseResult, responseType: responseType};
-}
+import { prepareAnswer }                                from '../helpers/aux'
 
 export function handleGETrequest(req, connection) {
   return new Promise((resolve, reject) => {
@@ -16,11 +13,11 @@ export function handleGETrequest(req, connection) {
         readMySQLQuery('./queries/query_' + Object.keys(inputQueryParams)[0] + '_' + inputQueryParams[Object.keys(inputQueryParams)[0]] + '.sql')
         .then(
           text_query  => queryMySQLConnection(connection, text_query, [inputQueryParams.year, inputQueryParams.program_number ? inputQueryParams.program_number : inputQueryParams.channel_number]),
-          errRead     => reject(prepareAnswer(200, errRead.toString(), 'text/html'))
+          errRead     => reject(prepareAnswer (200, errRead.toString(), 'text/html'))
         )
         .then(
           results     => resolve(prepareAnswer(200, JSON.stringify(results), 'application/json')),
-          errQuery    => reject(prepareAnswer(200, errQuery.toString(), 'text/html'))
+          errQuery    => reject(prepareAnswer (200, errQuery.toString(), 'text/html'))
         )		
       }
     }

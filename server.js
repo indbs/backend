@@ -1,14 +1,10 @@
 import { createServer } 																from 'http';
-import { readFile } 																		from 'fs';
-import { parse } 																				from 'url';
 import { createMySQLConnection,
-				 closeMySQLConnection,
-				 queryMySQLConnection } 												from './connection';
-import 	 jwt 																						from 'jsonwebtoken';
+				 closeMySQLConnection } 												from './connection';
 import { handleOPTIONSrequest }													from './RequestMethodHandlers/optionsHandler'
 import { handleGETrequest }															from './RequestMethodHandlers/getHandler'
-import { tokens }																				from './constants/tokens'
-import { readMySQLQuery}																from './fs/readQueryFromFile'
+import { handlePOST_RegistrationRequest,
+				 handlePOST_LoginRequest}												from './RequestMethodHandlers/postHandler'
   
 createServer(function (req, res) {
 	
@@ -40,59 +36,28 @@ createServer(function (req, res) {
 			}).on('end', () => {																														//receiving body data from http
 				body = Buffer.concat(body).toString();
 				if (JSON.parse(body).userDataPairToken){
-					var untokenUserDataPair = jwt.verify(JSON.parse(body).userDataPairToken, tokens.client_side_salt);
-					readFile('./queries/query_search_user.sql', 'utf-8', (err, text_query) => {
-						try{
-							if (err) throw err;
-							connection.query(text_query, [untokenUserDataPair.email, untokenUserDataPair.hash], function(err, results) {
-								try{
-									if (err) throw err;
-									var tokenForData = jwt.sign(tokens.client_side_value, tokens.client_side_token);
-									if (results[0])	writeAnswer(200, JSON.stringify({...JSON.parse(JSON.stringify(results[0])), ...{token: tokenForData}}),'application/json');
-									else	writeAnswer(400, JSON.stringify({ message: 'Неправильное имя пользователя или пароль!'}),'application/json');	//ok with result from db						
-								}	
-								catch(e){
-									writeAnswer(200, e.toString(),'text/html');
-								}
-							})
-						}
-						catch(e){
-							writeAnswer(200, e.toString(),'text/html');
-						}
-					})
+					handlePOST_LoginRequest(body, connection)
+						.then(
+							(result) 	=> writeAnswer(result.responseCode, result.responseResult, result.responseType),
+							(error) 	=> writeAnswer(error.responseCode, error.responseResult, error.responseType)
+						)
 				}
 				if (JSON.parse(body).userDataQuartetToken){
-					var untokenUserDataQuartet = jwt.verify(JSON.parse(body).userDataQuartetToken, tokens.client_side_salt);
-					readFile('./queries/query_insert_user.sql', 'utf-8', (err, text_query) => {
-						try{
-							if (err) throw err;
-							connection.query(text_query, [untokenUserDataQuartet.email, untokenUserDataQuartet.hash, untokenUserDataQuartet.name, untokenUserDataQuartet.surname], function(err, results) {
-								try{
-									if (err) throw err;
-									if (results)	writeAnswer(200, JSON.stringify(results), 'application/json');
-									else	writeAnswer(400, JSON.stringify({ message: 'Что-то пошло не так!..'}),'application/json');	//ok with result from db						
-								}	
-								catch(e){
-									writeAnswer(200, e.toString(),'text/html');
-								}
-							})
-						}
-						catch(e){
-							writeAnswer(200, e.toString(),'text/html');
-						}
-					})
+					handlePOST_RegistrationRequest(body, connection)
+						.then(
+							(result) 	=> writeAnswer(result.responseCode, result.responseResult, result.responseType),
+							(error) 	=> writeAnswer(error.responseCode, error.responseResult, error.responseType)
+						)
 				}
 			});
 		}
 		
 		if (req.method == 'GET') {
 			handleGETrequest(req, connection)
-				.then((result) => {
-					writeAnswer(result.responseCode, result.responseResult, result.responseType);
-				})
-				.catch((result) => {
-					writeAnswer(result.responseCode, result.responseResult, result.responseType);
-				})
+				.then(
+					(result) 	=> writeAnswer(result.responseCode, result.responseResult, result.responseType),
+					(error) 	=> writeAnswer(error.responseCode, error.responseResult, error.responseType)
+				)
 		}
 
 		if (req.method == 'OPTIONS') {

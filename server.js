@@ -16,7 +16,7 @@ createServer(function (req, res) {
 	makeMySQLConnection(connection)
 		.then(
 			readQuery(req),
-			(error) 	=> writeAnswer(error.responseCode, error.responseResult, error.responseType)
+			(error) => writeAnswer(error.responseCode, error.responseResult, error.responseType)
 		)
 
 	function readQuery(req){

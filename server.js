@@ -1,6 +1,5 @@
 import { createServer } 																from 'http';
 import { createMySQLConnection,
-				 closeMySQLConnection,
 				 makeMySQLConnection } 													from './connection';
 import { handleOPTIONSrequest }													from './RequestMethodHandlers/optionsHandler'
 import { handleGETrequest }															from './RequestMethodHandlers/getHandler'
@@ -72,5 +71,7 @@ createServer(function (req, res) {
 
 function writeAnswer(req, res, content){
 	res.writeHead(content.responseCode, {'Content-Type': content.responseType});
-	res.end(content.responseResult);	
+	res.end(content.responseResult);
+	
+	return res;
 }

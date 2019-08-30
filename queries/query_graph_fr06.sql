@@ -1,5 +1,5 @@
 SELECT
-   	time,
+  time,
 	MV_HEAT,
 	PROGRAM_NUMBER,
 	TEMP_S,
@@ -7,8 +7,8 @@ SELECT
 	set_value,
 	fan_speed
 FROM
-   	fr06
+  fr06
 WHERE
-   	year(date(time))=? and PROGRAM_NUMBER=?
+  year(date(time))=? and PROGRAM_NUMBER=?
 GROUP BY
-   	time;
+  time;

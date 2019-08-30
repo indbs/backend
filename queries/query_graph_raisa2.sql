@@ -1,5 +1,5 @@
 SELECT
-   	time1,
+  time1,
 	average,
 	setpoint,
 	current_l1,
@@ -17,8 +17,8 @@ SELECT
 	flap_d_percent_position,
 	flap_e_percent_position
 FROM
-   	raisa_2
+  raisa_2
 WHERE
-   	year(date(time1))=? and PROGRAM_NUMBER=?
+  year(date(time1))=? and PROGRAM_NUMBER=?
 GROUP BY
-   	time1;
+  time1;

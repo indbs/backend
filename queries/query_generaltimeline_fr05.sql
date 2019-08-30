@@ -7,9 +7,9 @@ SELECT
 	round(avg(SP),2) as SP,
 	round(avg(OUTPUT_POWER),2) as OUTPUT_POWER, 
 	concat('',timediff(max(time),min(time))) as duration,
-    concat('',timediff(min(time),ifnull((select max(time)FROM fr05 where program_number=mt1.program_number-1 and year(date(time))=year(now())),
+  concat('',timediff(min(time),ifnull((select max(time)FROM fr05 where program_number=mt1.program_number-1 and year(date(time))=year(now())),
 	min(time)))) as pause,
-    ifnull(TIMESTAMPDIFF(SECOND,(Select max(time)from fr05 where (program_number=mt1.program_number) and (year(date(time))=year(now())) and (month(now())-month(date(time))<2)),now()),0)  as currentWork 
+  ifnull(TIMESTAMPDIFF(SECOND,(Select max(time)from fr05 where (program_number=mt1.program_number) and (year(date(time))=year(now())) and (month(now())-month(date(time))<2)),now()),0)  as currentWork 
 FROM
 	fr05 mt1
 WHERE

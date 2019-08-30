@@ -1,5 +1,5 @@
 SELECT
-   	time,
+  time,
 	average,
 	setpoint,
 	current_l1,
@@ -17,8 +17,8 @@ SELECT
 	flap_d_percent_position,
 	flap_e_percent_position
 FROM
-   	KILN_WORK_FINAL_LAST3
+  KILN_WORK_FINAL_LAST3
 WHERE
-   	year(date(time))=? and PROGRAM_NUMBER=?
+  year(date(time))=? and PROGRAM_NUMBER=?
 GROUP BY
-   	time;
+  time;

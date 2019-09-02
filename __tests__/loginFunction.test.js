@@ -3,12 +3,11 @@ import 	 jwt 																						from 'jsonwebtoken';
 import   pbkdf2                                         from 'crypto-js/pbkdf2';
 import { createMySQLConnection,
          makeMySQLConnection } 													from '../connection';
-import { handlePOST_RegistrationRequest,
-         handlePOST_LoginRequest }											from '../RequestMethodHandlers/postHandler'
+import { handlePOST_LoginRequest }											from '../RequestMethodHandlers/postHandler'
 
 test('existingUserLoginTest', async () => {
-  var hashedPassword = pbkdf2('1234', tokens.client_side_salt_hash, { keySize: 512/32, iterations: 1000 }).toString();
-  var userDataPairToken = jwt.sign({email: 'b.smirnov@rusgates.ru', hash: hashedPassword}, tokens.client_side_salt);
+  var hashedPassword = pbkdf2(tokens.client_side_user_test_pass, tokens.client_side_salt_hash, { keySize: 512/32, iterations: 1000 }).toString();
+  var userDataPairToken = jwt.sign({email: tokens.client_side_user_test_email, hash: hashedPassword}, tokens.client_side_salt);
   const requestOptions = {
     body: JSON.stringify({userDataPairToken})
   }
@@ -28,8 +27,8 @@ test('existingUserLoginTest', async () => {
 })
 
 test('notExistingUserLoginTest', async () => {
-  var hashedPassword = pbkdf2('password', tokens.client_side_salt_hash, { keySize: 512/32, iterations: 1000 }).toString();
-  var userDataPairToken = jwt.sign({email: 'ba.smirnov@rusgates.ru', hash: hashedPassword}, tokens.client_side_salt);
+  var hashedPassword = pbkdf2('incorrect_password', tokens.client_side_salt_hash, { keySize: 512/32, iterations: 1000 }).toString();
+  var userDataPairToken = jwt.sign({email: tokens.client_side_user_test_email, hash: hashedPassword}, tokens.client_side_salt);
   const requestOptions = {
     body: JSON.stringify({userDataPairToken})
   }

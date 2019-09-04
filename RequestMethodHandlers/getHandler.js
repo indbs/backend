@@ -5,6 +5,10 @@ import { readMySQLQuery}																from '../fs/readQueryFromFile'
 import { queryMySQLConnection } 												from '../connection';
 import { prepareAnswer }                                from '../helpers/aux_functions'
 
+// Working with GET request
+// 1. Read file with query
+// 2. Get data from db
+// 3. Return data
 export function handleGETrequest(req, connection) {
   return new Promise((resolve, reject) => {
     if(req.headers.authorization){

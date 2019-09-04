@@ -4,6 +4,10 @@ import   pbkdf2                                         from 'crypto-js/pbkdf2';
 import   fetch                                          from 'node-fetch'
 import { kiln_constants_en }                            from '../constants/kiln_constants'
 
+// Test with fetch() to back. Tests 
+// 1. response with token
+// 2. use this token to get graph data
+
 test('existingUserLoginAndDataRequest', async () => {
   var hashedPassword = pbkdf2(tokens.client_side_user_test_pass, tokens.client_side_salt_hash, { keySize: 512/32, iterations: 1000 }).toString();
   var userDataPairToken = jwt.sign({email: tokens.client_side_user_test_email, hash: hashedPassword}, tokens.client_side_salt);

@@ -5,6 +5,10 @@ import { createMySQLConnection,
          makeMySQLConnection } 													from '../connection';
 import { handlePOST_LoginRequest }											from '../RequestMethodHandlers/postHandler'
 
+// These two tests tests only handlePOST_LoginRequest() from '../RequestMethodHandlers/postHandler' thru real connection from createMySQLConnection() and makeMySQLConnection()
+// The response is manually typed
+
+// existingUserLoginTest() - test on ok with existing user and pass
 test('existingUserLoginTest', async () => {
   var hashedPassword = pbkdf2(tokens.client_side_user_test_pass, tokens.client_side_salt_hash, { keySize: 512/32, iterations: 1000 }).toString();
   var userDataPairToken = jwt.sign({email: tokens.client_side_user_test_email, hash: hashedPassword}, tokens.client_side_salt);
@@ -26,6 +30,7 @@ test('existingUserLoginTest', async () => {
     )
 })
 
+// notExistingUserLoginTest() - test on not ok with existing user and wrong pass or not existing user
 test('notExistingUserLoginTest', async () => {
   var hashedPassword = pbkdf2('incorrect_password', tokens.client_side_salt_hash, { keySize: 512/32, iterations: 1000 }).toString();
   var userDataPairToken = jwt.sign({email: tokens.client_side_user_test_email, hash: hashedPassword}, tokens.client_side_salt);

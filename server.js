@@ -5,11 +5,13 @@ import { handleOPTIONSrequest }													from './RequestMethodHandlers/option
 import { handleGETrequest }															from './RequestMethodHandlers/getHandler'
 import { handlePOST_RegistrationRequest,
 				 handlePOST_LoginRequest }											from './RequestMethodHandlers/postHandler'
-	
+
+// Gives the connection
 function createCon(){
 	return createMySQLConnection();
 }			
 
+// Makes connection, read request, gives response
 function makeCon(req, res, con){
 	return makeMySQLConnection(con)
 		.then(
@@ -24,6 +26,7 @@ function makeCon(req, res, con){
 		)
 }
 
+// Reading request
 export function readQuery(req, res, connection){
 	return new Promise((resolve, reject) => {
 		if (req.method == 'POST') {
@@ -70,6 +73,7 @@ export function readQuery(req, res, connection){
 	})
 }
 
+// Entry point
 createServer(function (req, res) {
 	
 	var connection = createCon();
@@ -80,6 +84,7 @@ createServer(function (req, res) {
 
 }).listen(8060);
 
+// Exit point
 function writeAnswer(req, res, result){
 	res.writeHead(result.responseCode, {'Content-Type': result.responseType});
 	res.end(result.responseResult);

@@ -1,10 +1,13 @@
 import { tokens }																				from '../constants/tokens'
 import 	 jwt 																						from 'jsonwebtoken';
-//import { parse } 																				from 'url';
 import { readMySQLQuery}																from '../fs/readQueryFromFile'
 import { queryMySQLConnection } 												from '../connection';
 import { prepareAnswer }                                from '../helpers/aux_functions'
 
+// Working with POST registration request
+// 1. Read file with query
+// 2. Insert registration data to db
+// 3. Return status answer
 export function handlePOST_RegistrationRequest(body, connection) {
   return new Promise((resolve, reject) => {
     var untokenUserDataQuartet = jwt.verify(JSON.parse(body).userDataQuartetToken, tokens.client_side_salt);
@@ -20,6 +23,10 @@ export function handlePOST_RegistrationRequest(body, connection) {
   })
 }
 
+// Working with POST login request
+// 1. Read file with query
+// 2. Get login data from db
+// 3. If user exists and password is correct - allow login
 export function handlePOST_LoginRequest(body, connection) {
   return new Promise((resolve, reject) => {
     var untokenUserDataPair = jwt.verify(JSON.parse(body).userDataPairToken, tokens.client_side_salt);
